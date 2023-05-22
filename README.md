@@ -15,7 +15,7 @@ import pygame
 from pygame import mixer
 import sys
 
-#Dando incicio ao jogo e ao som
+#Dando incicio ao jogo e ao som.
 pygame.init()
 mixer.init()
 
