@@ -11,89 +11,97 @@ pyinstaller --onefile ping-pong.py
 
 # Set das variáveis
 ```python
-import pygame
-from pygame import mixer
-import sys
+import pygame  # Biblioteca principal do Pygame
+from pygame import mixer  # Submódulo de áudio do Pygame
+import sys  # Módulo do sistema
 
 #Dando incicio ao jogo e ao som.
 pygame.init()
 mixer.init()
 
-#Definindo o tamanho da tela, das raquetes, da bola, e a velocidade de ambos
-SCREEN_WIDTH =800
-SCREEN_HEIGHT = 600
-PADDLE_WIDTH = 10
-PADDLE_HEIGHT = 60
-BALL_SIZE = 10
-PADDLE_SPEED = 4
-BALL_SPEED = 5
+# Configuração da tela
+# Largura e altura da tela
+SCREEN_WIDTH = 800  # Largura da tela em pixels
+SCREEN_HEIGHT = 600  # Altura da tela em pixels
 
-WHITE = (255,255,255)
-BLACK = (0,0,0)
+# Dimensões das paletas e bola
+PADDLE_WIDTH = 10  # Largura da paleta em pixels
+PADDLE_HEIGHT = 60  # Altura da paleta em pixels
+BALL_SIZE = 10  # Tamanho da bola em pixels
 
-font_file = "PressStart2P-Regular"
-font = pygame.font.Font(font_file, 36)
-score_a = 0
-score_b = 0
+# Velocidade das paletas e da bola
+PADDLE_SPEED = 4  # Velocidade de movimento das paletas
+BALL_SPEED = 5  # Velocidade de movimento da bola
 
-mixer.music.load("music_game")
-mixer.music.set_volume(0.3)
-collision_sound_A = mixer.Sound("Sound_A.wav")
-collision_sound_B = mixer.Sound("Sound_B.wav")
-point_sound = mixer.Sound("Sound_B.wav")
+# Cores
+WHITE = (255, 255, 255)  # Cor branca
+BLACK = (0, 0, 0)  # Cor preta
+
+font_file = "PressStart2P-Regular" #inho para o arquivo de fonte
+font = pygame.font.Font(font_file, 36) # Objeto de fonte com tamanho 36
+score_a = 0 # Pontuação do jogador A
+score_b = 0 #  Pontuação do jogador B
+
+# Carregamento das músicas e sons
+mixer.music.load("music_game") # Carrega a música de fundo
+mixer.music.set_volume(0.3) # Define o volume da música
+collision_sound_A = mixer.Sound("Sound_A.wav") # Carrega o som de colisão A
+collision_sound_B = mixer.Sound("Sound_B.wav") # Carrega o som de colisão B
+point_sound = mixer.Sound("Sound_B.wav") # Carrega o som de ponto
 
 mixer.music.play(-1) #Faz a música tocar em loop
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT)) #está sendo usada para criar uma janela de exibição na biblioteca pygame com dimensões especificadas
-pygame.display.set_caption("Pong") #Definindo o título da janela de exibição do jogo como "Pong"
+# Configuração da tela do jogo
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Cria a tela do jogo com a largura e altura especificadas
+pygame.display.set_caption("Pong")  # Define o título da janela do jogo
 
-#As linhas de código abaixo estão criando objetos pygame.Rect para representar as raquetes (paddle_a e paddle_b) e a bola (ball) em um jogo. Além disso, estão inicializando as variáveis ball_dx e ball_dy com a velocidade da bola
-paddle_a = pygame.Rect(20, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
-paddle_b = pygame.Rect(SCREEN_WIDTH - 20 - PADDLE_WIDTH, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
-ball =  pygame.Rect(SCREEN_WIDTH //2 - BALL_SIZE // 2, SCREEN_HEIGHT // 2 - BALL_SIZE//2, BALL_SIZE, BALL_SIZE)
-ball_dx, ball_dy = BALL_SPEED, BALL_SPEED
+# Definição das posições e dimensões das paletas e bola
+paddle_a = pygame.Rect(20, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)  # Paleta A
+paddle_b = pygame.Rect(SCREEN_WIDTH - 20 - PADDLE_WIDTH, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)  # Paleta B
+ball = pygame.Rect(SCREEN_WIDTH // 2 - BALL_SIZE // 2, SCREEN_HEIGHT // 2 - BALL_SIZE // 2, BALL_SIZE, BALL_SIZE)  # Bola
+ball_dx, ball_dy = BALL_SPEED, BALL_SPEED  # Velocidade de movimento da bola
 
 ```
 
 # Renderização do Menu
-
-
 
 ```python
 def main_menu():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                pygame.quit()  # Encerra o pygame
+                sys.exit()  # Encerra o programa
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    game_loop()
+                    game_loop()  # Inicia o loop do jogo
                 elif event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    pygame.quit()  # Encerra o pygame
+                    sys.exit()  # Encerra o programa
 
         # Renderização do menu principal
-        screen.fill(BLACK)
+        screen.fill(BLACK)  # Preenche a tela com a cor preta
         title_font = pygame.font.Font(font_file, 36)  # Configuração da Fonte
-        title_text = title_font.render("Pong", True, WHITE)
-        title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
+        title_text = title_font.render("Pong", True, WHITE)  # Renderiza o texto do título
+        title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))  # Posição do texto do título
 
-        screen.blit(title_text, title_rect) #Desenhar o texto do título na tela de exibição.
+        screen.blit(title_text, title_rect)  # Desenha o texto do título na tela
 
-        title_font = pygame.font.Font(font_file, 16)
-        current_time = pygame.time.get_ticks() #Obtém o tempo decorrido em milissegundos desde que o Pygame foi inicializado ou o último reinício do tempo.
+        title_font = pygame.font.Font(font_file, 16)  # Configuração da Fonte
+        current_time = pygame.time.get_ticks()  # Obtém o tempo atual em milissegundos
 
         if current_time % 2000 < 1000:
-            title_text1 = title_font.render("Pressione espaço para iniciar", True, WHITE)
-            title_rect1 = title_text1.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4 + 60)) # cria um retângulo que envolve o texto title_text1 e o posiciona no centro horizontal e a uma certa distância vertical da tela.
-            screen.blit(title_text1, title_rect1) #Desenha o texto title_text1 na tela de exibição, utilizando o retângulo title_rect1 para definir sua posição.
+            title_text1 = title_font.render("Pressione espaço para iniciar", True, WHITE)  # Renderiza o texto de instrução
+            title_rect1 = title_text1.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4 + 60))  # Posição do texto de instrução
+            screen.blit(title_text1, title_rect1)  # Desenha o texto de instrução na tela
 
-        
-        pygame.display.flip()
+        pygame.display.flip()  # Atualiza a tela
 ```
 
 #### Explicação da Estrutura a seguir:
+Trata-se de uma estrutura práticada por desenvolvedores de jogos utilizando essa biblioteca.
+
+A estrutura envolve a criação de um loop principal *(while True)* que continua executando indefinidamente até que uma condição de término seja encontrada. Dentro desse loop principal, os eventos são verificados em um loop *for* para capturar as interações do jogador, como o fechamento da janela ou pressionar teclas específicas.
 
 ```python
     while True:
@@ -109,241 +117,173 @@ def main_menu():
                     pygame.quit()
                     sys.exit()
 ```
-<blockquote style="background-color: #E6F0F7;">
-
-Trata-se de uma estrutura práticada por desenvolvedores de jogos utilizando essa biblioteca.
-
-A estrutura envolve a criação de um loop principal *(while True)* que continua executando indefinidamente até que uma condição de término seja encontrada. Dentro desse loop principal, os eventos são verificados em um loop *for* para capturar as interações do jogador, como o fechamento da janela ou pressionar teclas específicas.
-
-</blockquote>
-
-
-
-
-
-
-<blockquote style="background-color: #E6F0F7;">
-
-Podemos ver que esse bloco funciona da seguinte forma:
-
-```python
-current_time = pygame.time.get_ticks()
-```
-A função é chamada para obter o tempo em milissegundos desde que o jogo começou.
-
-```python
-if current_time % 2000 < 1000:
-```
-O trecho de código verifica se o resto da divisão da variável *current_time* por 2000 é menor que 1000. Se essa condição for verdadeira, significa que *current_time* está dentro do intervalo de 0 a 999 milissegundos após cada múltiplo de 2000 milissegundos. Essa verificação é usada para criar um efeito piscante.
-
-Por exemplo, se *current_time* for 2500, o resto da divisão por 2000 é 500. Como 500 é menor que 1000, a condição é verdadeira e o código dentro do bloco if será executado. Isso resultará na renderização do texto desejado. Esse efeito piscante é criado porque o texto só será mostrado durante a primeira metade do intervalo de 2000 milissegundos.
-
-</blockquote>
 
 # Game
 
 ```python
 def game_loop():
-    global ball_dx, ball_dy, score_a, score_b, ball #Indica que as variáveis mencionadas são globais e não locais dentro da função em que a declaração é feita
+    global ball_dx, ball_dy, score_a, score_b, ball  # Variáveis globais para controle do jogo
 
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return
+        for event in pygame.event.get():  # Loop de eventos do pygame
+            if event.type == pygame.QUIT:  # Verifica se o evento é de saída do jogo
+                pygame.quit()  # Encerra o pygame
+                sys.exit()  # Encerra o programa
+            if event.type == pygame.KEYDOWN:  # Verifica se alguma tecla foi pressionada
+                if event.key == pygame.K_ESCAPE:  # Verifica se a tecla pressionada é ESCAPE
+                    return  # Sai do loop do jogo
 
-        #comente
-        screen.fill(BLACK) #preenche a tela com a cor preta, limpando qualquer desenho anterior e fornecendo um fundo preto para a próxima renderização.
-        pygame.draw.rect(screen, WHITE, paddle_a) #desenha um retângulo branco representando a raquete A na posição e tamanho definidos pela variável 
-        pygame.draw.rect(screen, WHITE, paddle_b) #desenha um retângulo branco representando a raquete B na posição e tamanho definidos pela variável 
-        pygame.draw.ellipse(screen, WHITE, ball) #desenha uma elipse branca representando a bola na posição e tamanho definidos pela variável 
-        pygame.draw.aaline(screen, WHITE, (SCREEN_WIDTH // 2, 0), (SCREEN_WIDTH // 2, SCREEN_HEIGHT)) # desenha uma linha antialiasing branca vertical no centro da tela, dividindo a área de jogo em duas partes.
+        screen.fill(BLACK)  # Limpa a tela preenchendo-a com a cor preta
+        pygame.draw.rect(screen, WHITE, paddle_a)  # Desenha a raquete A
+        pygame.draw.rect(screen, WHITE, paddle_b)  # Desenha a raquete B
+        pygame.draw.ellipse(screen, WHITE, ball)  # Desenha a bola
+        pygame.draw.aaline(screen, WHITE, (SCREEN_WIDTH // 2, 0),
+                           (SCREEN_WIDTH // 2, SCREEN_HEIGHT))  # Desenha uma linha vertical no centro da tela
 
-        #Responsável por obter o estado atual de todas as teclas do teclado.
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed()  # Obtém o estado das teclas pressionadas
 
-        #Movimento Vertical Raquete A
-        if keys[pygame.K_w] and paddle_a.top > 0:
-            paddle_a.y -= PADDLE_SPEED
-        if keys[pygame.K_s] and paddle_a.bottom < SCREEN_HEIGHT:
-            paddle_a.y += PADDLE_SPEED
+        # O trecho de código a seguir presente no #Movimento Vertical Raquete A e B é responsável pelo moviemnto vertical das raquetes A e B, na qual ele verifica a tecla que foi pressionada e realiza o movimento da respectiva raquete verticalmente até o limite vertical da tela.
+        # Movimento Vertical Raquete A
+        if keys[
+            pygame.K_w] and paddle_a.top > 0:  # Verifica se a tecla 'w' foi pressionada e se a raquete A não está no topo da tela
+            paddle_a.y -= PADDLE_SPEED  # Move a raquete A para cima
+        if keys[
+            pygame.K_s] and paddle_a.bottom < SCREEN_HEIGHT:  # Verifica se a tecla 's' foi pressionada e se a raquete A não está na parte inferior da tela
+            paddle_a.y += PADDLE_SPEED  # Move a raquete A para baixo
 
-        #Movimento Vertical Raquete B
-        if keys[pygame.K_UP] and paddle_b.top > 0:
-            paddle_b.y -= PADDLE_SPEED
-        if keys[pygame.K_DOWN] and paddle_b.bottom < SCREEN_HEIGHT:
-            paddle_b.y += PADDLE_SPEED
+        # Movimento Vertical Raquete B
+        if keys[
+            pygame.K_UP] and paddle_b.top > 0:  # Verifica se a seta para cima foi pressionada e se a raquete B não está no topo da tela
+            paddle_b.y -= PADDLE_SPEED  # Move a raquete B para cima
+        if keys[
+            pygame.K_DOWN] and paddle_b.bottom < SCREEN_HEIGHT:  # Verifica se a seta para baixo foi pressionada e se a raquete B não está na parte inferior da tela
+            paddle_b.y += PADDLE_SPEED  # Move a raquete B para baixo
 
-        #Movimento Horizontal Raquete A
-        if keys[pygame.K_a] and paddle_a.left > 0:
-            paddle_a.x -= PADDLE_SPEED
-        if keys[pygame.K_d] and paddle_a.right < SCREEN_WIDTH // 2 - 70:
-            paddle_a.x += PADDLE_SPEED
+        # O trecho a seguir presente no #Movimento Horizontal Raquete A e B é responsável pelo moviemnto horizontal das raquetes A e B, na qual ele verifica a tecla que foi pressionada e realiza o movimento da respectiva raquete horizontalmente até o limite horizontal do meio da tela.
+        # Movimento Horizontal Raquete A
+        if keys[
+            pygame.K_a] and paddle_a.left > 0:  # Verifica se a tecla 'a' foi pressionada e se a raquete A não está no limite esquerdo da tela
+            paddle_a.x -= PADDLE_SPEED  # Move a raquete A para a esquerda
+        if keys[
+            pygame.K_d] and paddle_a.right < SCREEN_WIDTH // 2 - 70:  # Verifica se a tecla 'd' foi pressionada e se a raquete A não está no limite direito da tela
+            paddle_a.x += PADDLE_SPEED  # Move a raquete A para a direita
 
-        #Movimento Horizontal Raquete B
-        #Do it
-        # >
-        # >
-        # >
-        # >
-        # >
-      
+        # Movimento Horizontal Raquete B
+        if keys[
+            pygame.K_LEFT] and paddle_b.left > SCREEN_WIDTH // 2 + 70:  # Verifica se a seta para a esquerda foi pressionada e se a raquete B não está no limite esquerdo da tela
+            paddle_b.x -= PADDLE_SPEED  # Move a raquete B para a esquerda
+        if keys[
+            pygame.K_RIGHT] and paddle_b.right < SCREEN_WIDTH:  # Verifica se a seta para a direita foi pressionada e se a raquete B não está no limite direito da tela
+            paddle_b.x += PADDLE_SPEED  # Move a raquete B para a direita
+
         # Atualização da posição da bola
-        ball.x += ball_dx
-        ball.y += ball_dy
+        ball.x += ball_dx  # Atualiza a posição horizontal da bola
+        ball.y += ball_dy  # Atualiza a posição vertical da bola
 
+        # A seguir segue o comportamento da bola quando colide com os cantos ou com as raquetes
+        if ball.colliderect(paddle_a):  # Verifica se a bola colidiu com a raquete A
+            ball.left = paddle_a.right  # Reposiciona a bola à direita da raquete A
+            ball_dx = -ball_dx  # Inverte a direção horizontal da bola
+            collision_sound_A.play()  # Reproduz o som de colisão para a raquete A
 
-        if ball.colliderect(paddle_a):
-            ball.left = paddle_a.right
-            ball_dx = -ball_dx
-            collision_sound_A.play()
+        elif ball.colliderect(paddle_b):  # Verifica se a bola colidiu com a raquete B
+            ball.right = paddle_b.left  # Reposiciona a bola à esquerda da raquete B
+            ball_dx = -ball_dx  # Inverte a direção horizontal da bola
+            collision_sound_B.play()  # Reproduz o som de colisão para a raquete B
 
-        elif ball.colliderect(paddle_b):
-            ball.right = paddle_b.left
-            ball_dx = -ball_dx
-            collision_sound_B.play()
+        elif ball.colliderect(paddle_a):  # Verifica se a bola colidiu com a raquete A (caso especial)
+            ball.left = paddle_b.topright  # Reposiciona a bola no canto superior direito da raquete B
+            ball_dx = -ball_dx  # Inverte a direção horizontal da bola
+            collision_sound_B.play()  # Reproduz o som de colisão para a raquete B
 
-        #Continue...
-        #Do it
-        # >
-        # >
-        # >
-        # >
-        # >
+        elif ball.colliderect(paddle_b):  # Verifica se a bola colidiu com a raquete B (caso especial)
+            ball.right = paddle_b.topleft  # Reposiciona a bola no canto superior esquerdo da raquete B
+            ball_dx = -ball_dx  # Inverte a direção horizontal da bola
+            collision_sound_B.play()  # Reproduz o som de colisão para a raquete B
 
+        # Bola quando bate na extremidade da tela
+        if ball.top <= 0 or ball.bottom >= SCREEN_HEIGHT:  # Verifica se a bola atingiu a parte superior ou inferior da tela
+            ball_dy = -ball_dy  # Inverte a direção vertical da bola
 
-        #Bola quando bate na extremidade da tela
-        if ball.top <= 0 or ball.bottom >= SCREEN_HEIGHT:
-            ball_dy = -ball_dy
+        # Nos trechos a seguir determina quando deve aumentar a pontuação para determinado time
+        # Ponto para o Time B
+        if ball.left <= 0:  # Verifica se a bola ultrapassou a borda esquerda da tela
+            score_b += 1  # Incrementa o placar do Time B
+            ball.x = SCREEN_WIDTH // 2 - BALL_SIZE // 2  # Reposiciona a bola no centro horizontal da tela
+            ball.y = SCREEN_HEIGHT // 2 - BALL_SIZE // 2  # Reposiciona a bola no centro vertical da tela
+            ball_dx = -ball_dx  # Inverte a direção horizontal da bola
+            point_sound.play()  # Reproduz o som de ponto marcado
+            if score_b == 10:  # Verifica se o Time B alcançou a pontuação de 10 (comente)
+                end_game(False)  # Chama a função de fim de jogo para o Time B
 
-        #Ponto para o Time B
-        if ball.left <= 0:
-            score_b += 1
-            ball.x = SCREEN_WIDTH // 2 - BALL_SIZE // 2
-            ball.y = SCREEN_HEIGHT // 2 - BALL_SIZE // 2
-            ball_dx = -ball_dx
-            point_sound.play()
-            # print(score_b)
-            if score_b == 10: #Se a pontuação do b for = 10, finaliza o jogo
-                end_game(False)
-
-        #Ponto para o Time A
-        elif ball.right >= SCREEN_WIDTH:
-            score_a += 1
-            ball.x = SCREEN_WIDTH // 2 - BALL_SIZE // 2
-            ball.y = SCREEN_HEIGHT // 2 - BALL_SIZE // 2
-            ball_dx = -ball_dx
-            point_sound.play()
-            # print(score_a)
-            if score_a == 10: #e a pontuação do a for = 10, finaliza o jogo
-                end_game(True)
+        # Ponto para o Time A
+        elif ball.right >= SCREEN_WIDTH:  # Verifica se a bola ultrapassou a borda direita da tela
+            score_a += 1  # Incrementa o placar do Time A
+            ball.x = SCREEN_WIDTH // 2 - BALL_SIZE // 2  # Reposiciona a bola no centro horizontal da tela
+            ball.y = SCREEN_HEIGHT // 2 - BALL_SIZE // 2  # Reposiciona a bola no centro vertical da tela
+            ball_dx = -ball_dx  # Inverte a direção horizontal da bola
+            point_sound.play()  # Reproduz o som de ponto marcado
+            if score_a == 10:  # Verifica se o Time A alcançou a pontuação de 10 (comente)
+                end_game(True)  # Chama a função de fim de jogo para o Time A
 
         # Placar na Tela
-        score_text = font.render(f"{score_a}  {score_b}", True, WHITE)
-        score_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, 30))
-        screen.blit(score_text, score_rect)
+        score_text = font.render(f"{score_a}  {score_b}", True,
+                                 WHITE)  # Renderiza o texto do placar com a pontuação dos times
+        score_rect = score_text.get_rect(
+            center=(SCREEN_WIDTH // 2, 30))  # Obtém o retângulo que engloba o texto do placar e centraliza na tela
+        screen.blit(score_text, score_rect)  # Desenha o texto do placar na tela
 
         # Atualizar a tela
-        pygame.display.flip()
+        pygame.display.flip()  # Atualiza a tela para exibir as alterações feitas
 
         # Controlar FPS
-        clock = pygame.time.Clock()
-        clock.tick(60)
+        clock = pygame.time.Clock()  # Cria um objeto Clock para controlar a taxa de atualização da tela
+        clock.tick(60)  # Limita a taxa de atualização para 60 quadros por segundo (FPS)
+
 ```
-
-<blockquote style="background-color: #EAB8AD;">
-
-Explique o Movimento Vertical colocando o código e comentando detalhadamente.
-
-</blockquote>
-
-<blockquote style="background-color: #EAB8AD;">
-
-Explique o Movimento Horizontal colocando o código e comentando detalhadamente.
-
-</blockquote>
-
-<blockquote style="background-color: #EAB8AD;">
-
-Explique o Sistema de Colisão colocando o código e comentando detalhadamente.
-
-Obs: Procure uma função que deixe o código conciso (Opcional). 
-
-</blockquote>
-
-<blockquote style="background-color: #EAB8AD;">
-
-Explique o Sistema de Pontuação colocando o código e comentando detalhadamente.
-
-</blockquote>
-
-#Fim de Jogo
+# Final de jogo
 
 ```python
-def end_game(winner): 
+def end_game(winner):
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    reset_game()
-                    return
-                elif event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+        for event in pygame.event.get():  # Loop para tratar os eventos
+            if event.type == pygame.QUIT:  # Se o evento for sair do jogo
+                pygame.quit()  # Encerra o pygame
+                sys.exit()  # Encerra o programa
+            if event.type == pygame.KEYDOWN:  # Se o evento for uma tecla pressionada
+                if event.key == pygame.K_SPACE:  # Se a tecla pressionada for a barra de espaço
+                    reset_game()  # Reinicia o jogo
+                    return  # Retorna ao loop principal
+                elif event.key == pygame.K_ESCAPE:  # Se a tecla pressionada for a tecla Esc
+                    pygame.quit()  # Encerra o pygame
+                    sys.exit()  # Encerra o programa
 
-       
-        mixer.music.stop()
-        screen.fill(BLACK)
-        #Comente
+        mixer.music.stop()  # Para a reprodução da música
+        screen.fill(BLACK)  # Preenche a tela com a cor preta
+
         if winner:
-            winner_text = "Player 2 Wins!"
+            winner_text = "Player 2 Wins!"  # Define o texto de vitória para o jogador 2
         else:
-            winner_text = "Player 1 Wins!"
+            winner_text = "Player 1 Wins!"  # Define o texto de vitória para o jogador 1
 
         # Renderização da tela de fim de jogo
-        winner_font = pygame.font.Font(font_file, 36)
-        winner_render = winner_font.render(winner_text, True, WHITE)
-        winner_rect = winner_render.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
-        screen.blit(winner_render, winner_rect)
-        pygame.display.flip()
+        winner_font = pygame.font.Font(font_file, 36)  # Define a fonte e o tamanho do texto
+        winner_render = winner_font.render(winner_text, True, WHITE)  # Renderiza o texto com a cor branca
+        winner_rect = winner_render.get_rect(
+            center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))  # Define a posição do texto
+        screen.blit(winner_render, winner_rect)  # Desenha o texto na tela
+        pygame.display.flip()  # Atualiza a tela
 ```
-<blockquote style="background-color: #EAB8AD;">
+# Reiniciar Game
 
-Explique a função *end_game(winner)* de maneira geral
-
-</blockquote>
-
-# Reiniciando o Jogo
 ```python
 def reset_game():
     global paddle_a, paddle_b, ball, ball_dx, ball_dy, score_a, score_b
 
-    paddle_a = pygame.Rect(20, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
-    paddle_b = pygame.Rect(SCREEN_WIDTH - 20 - PADDLE_WIDTH, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
-    ball = pygame.Rect(SCREEN_WIDTH // 2 - BALL_SIZE // 2, SCREEN_HEIGHT // 2 - BALL_SIZE // 2, BALL_SIZE, BALL_SIZE)
-    ball_dx, ball_dy = BALL_SPEED, BALL_SPEED
-    score_a, score_b = 0, 0
+    # Reinicialização das variáveis do jogo
+    paddle_a = pygame.Rect(20, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)  # Posiciona a raquete A
+    paddle_b = pygame.Rect(SCREEN_WIDTH - 20 - PADDLE_WIDTH, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)  # Posiciona a raquete B
+    ball = pygame.Rect(SCREEN_WIDTH // 2 - BALL_SIZE // 2, SCREEN_HEIGHT // 2 - BALL_SIZE // 2, BALL_SIZE, BALL_SIZE)  # Posiciona a bola
+    ball_dx, ball_dy = BALL_SPEED, BALL_SPEED  # Define a velocidade da bola
+    score_a, score_b = 0, 0  # Zera os pontos dos jogadores A e B
 ```
-
-<blockquote style="background-color: #EAB8AD;">
-
-Explique o código de maneira geral.
-
-</blockquote>
-
-# Pontos de melhorias (Opcional):
-
-- Existem blocos de códigos reduntantes.
-- Criar classes ao invés de simples funções (modular o código).
-- Procurar funções para deixar o código mais conciso. 
-
-# Desafios
-
-- Aumentar a velocidade da bola depois de 5 pontos marcados.
-
